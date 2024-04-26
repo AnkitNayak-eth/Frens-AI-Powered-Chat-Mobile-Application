@@ -1,57 +1,59 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "../firebase";
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { router } from 'expo-router';
 export const authContext = createContext();
-import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setisAuthenticated] = useState(undefined);
+  const [isAuthenticated, setIsAuthenticated] = useState(undefined);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setisAuthenticated(true);
+        setIsAuthenticated(user.emailVerified);
         setUser(user);
         updateUserData(user.uid);
       } else {
-        setisAuthenticated(false);
+        setIsAuthenticated(false);
         setUser(null);
       }
-    })
-    return unsub;
+    });
+
+    return unsubscribe;
   }, []);
 
   const updateUserData = async (userId) => {
     const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      let data = docSnap.data();
-      setUser({ ...user, username: data.username, userId: data.userId });
-    }
-  }
-
-
-
-  const login = async (email, password) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      return { success: true };
-    } catch (error) {
-      let msg = error.message;
-      if (msg.includes('(auth/invalid-email)')) msg = 'Invalid Email'
-      if (msg.includes('(auth/invalid-credential)')) msg = 'Wrong Credentials'
-      return { success: false, msg };
+      const data = docSnap.data();
+      setUser({ ...user, ...data });
     }
   };
 
-
-  const logout = async () => {
+  const updateUsername = async (userId, newUsername) => {
     try {
-      await signOut(auth);
-      return { success: true }
+      const userDocRef = doc(db, "users", userId);
+      await updateDoc(userDocRef, { username: newUsername });
+      setUser({ ...user, username: newUsername });
+      return { success: true };
     } catch (error) {
-      return { success: false, msg: error.message, error: error }
+      console.error("Error updating username: ", error);
+      return { success: false, error };
+    }
+  };
+
+  const updateProfileUrl = async (userId, downloadURL) => {
+    try {
+      const userDocRef = doc(db, "users", userId);
+      await updateDoc(userDocRef, { profileUrl: downloadURL });
+      setUser({ ...user, profileUrl: downloadURL }); 
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating Profile Photo: ", error);
+      return { success: false, error };
     }
   };
 
@@ -60,21 +62,64 @@ export const AuthContextProvider = ({ children }) => {
       const response = await createUserWithEmailAndPassword(auth, email, password);
       const user = response.user;
       await setDoc(doc(db, "users", user.uid), {
+        email: email,
+        password: password,
         username: username,
         userId: user.uid
+      });
+      await sendEmailVerification(user);
+      router.back();
+      // alert("Please verify your email to login.");
+      Toast.show({
+        type: 'error',
+        text1: 'Sign Up',
+        text2: "Please verify your email to login. 😊",
+        visibilityTime: 5000,
+        text1Style: { fontSize: 22 },
+        text2Style: { fontSize: 18 },
       });
       return { success: true, data: user.uid };
     } catch (error) {
       let msg = error.message;
-      if (msg.includes('(auth/invalid-email)')) msg = 'Invalid Email'
-      if (msg.includes('(auth/email-already-in-use)')) msg = 'Invalid Email'
+      if (msg.includes('(auth/invalid-email)')) msg = 'Invalid E-Mail';
+      if (msg.includes('(auth/email-already-in-use)')) msg = 'E-Mail Already In Use';
       return { success: false, msg };
+    }
+  };
+
+  const login = async (email, password) => {
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      const user = response.user;
+      setIsAuthenticated(user.emailVerified);
+      if (!user.emailVerified) {
+        alert("Please verify your email to login.");
+        await signOut(auth);
+      }
+      return { success: true };
+    } catch (error) {
+      let msg = error.message;
+      if (msg.includes('(auth/invalid-email)')) msg = 'Invalid E-Mail 😢';
+      if (msg.includes('(auth/wrong-password)')) msg = 'Invalid Password 😢';
+      if (msg.includes('(auth/user-not-found)')) msg = 'User Not Found 😢';
+      if (msg.includes('(auth/invalid-credential)')) msg = 'Invalid Credential 😢';
+      return { success: false, msg };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setIsAuthenticated(false);
+      return { success: true };
+    } catch (error) {
+      return { success: false, msg: error.message, error };
     }
   };
 
   return (
     <authContext.Provider
-      value={{ user, isAuthenticated, login, logout, register }}
+      value={{ user, isAuthenticated, login, logout, register, updateUsername, sendPasswordResetEmail, updateProfileUrl }}
     >
       {children}
     </authContext.Provider>
@@ -87,5 +132,6 @@ export const useAuth = () => {
   if (!value) {
     throw new Error("useAuth must be wrapped");
   }
+
   return value;
 };

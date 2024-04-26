@@ -11,25 +11,84 @@ import Loading from "../components/Loading";
 import LottieView from 'lottie-react-native';
 import KeyboardView from "../components/KeyboardView";
 import { useAuth } from "../context/authContext";
+import Toast from 'react-native-toast-message';
+import { auth } from "../firebase";
 
 const Signin = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const emailRef = useRef("");
   const passRef = useRef("");
-  const { login } = useAuth();
+  const { login, sendPasswordResetEmail } = useAuth();
 
   const handleSignin = async () => {
     if (!emailRef.current || !passRef.current) {
-      Alert.alert('Sign In', "Please fill all the fields!");
+      // Alert.alert('Sign In', "Please fill all the fields!");
+      Toast.show({
+        type: 'error',
+        text1: 'Sign In',
+        text2: 'Please fill all the fields! 😢',
+        visibilityTime: 5000,
+        text1Style: { fontSize: 22 },
+        text2Style: { fontSize: 18 },
+      });
       return;
     }
     setLoading(true);
     const response = await login(emailRef.current, passRef.current);
     setLoading(false);
     if (!response.success) {
-      Alert.alert('Sign In', response.msg);
+      // Alert.alert('Sign In', response.msg);
+      Toast.show({
+        type: 'error',
+        text1: 'Sign In',
+        text2: response.msg,
+        visibilityTime: 5000,
+        text1Style: { fontSize: 22 },
+        text2Style: { fontSize: 18 },
+      });
     }
+  }
+
+  const handleForgotPassword = async () => {
+    const email = emailRef.current.trim();
+    if (!email) {
+      // Alert.alert('Forgot Password', 'Please enter your email address.');
+      Toast.show({
+        type: 'error',
+        text1: 'Forgot Password',
+        text2: 'Please enter your email address.🤭',
+        visibilityTime: 5000,
+        text1Style: { fontSize: 22 },
+        text2Style: { fontSize: 18 },
+      });
+      return;
+    }
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(auth,email);
+      // Alert.alert('Forgot Password', 'Password reset email sent. Please check your inbox.');
+      Toast.show({
+        type: 'error',
+        text1: 'Forgot Password',
+        text2: 'Password reset email sent. Please check your inbox. 😮‍💨',
+        visibilityTime: 5000,
+        text1Style: { fontSize: 22 },
+        text2Style: { fontSize: 18 },
+      });
+    } catch (error) {
+      // Alert.alert('Forgot Password', error.message);
+      Toast.show({
+        type: 'error',
+        text1: 'Forgot Password',
+        text2: error.message,
+        visibilityTime: 5000,
+        text1Style: { fontSize: 22 },
+        text2Style: { fontSize: 18 },
+      });
+      console.log(error.message);
+    }
+    setLoading(false);
   }
 
   return (
@@ -84,6 +143,7 @@ const Signin = () => {
                 <Text
                   style={{ fontSize: hp(2) }}
                   className="text-right font-semibold "
+                  onPress={handleForgotPassword}
                 >
                   Forgot Password ?
                 </Text>
@@ -116,6 +176,7 @@ const Signin = () => {
           </View>
         </View>
       </View>
+      <Toast />
     </KeyboardView >
   );
 };

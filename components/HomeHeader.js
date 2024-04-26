@@ -15,7 +15,6 @@ const HomeHeader = () => {
   const openEdit = () =>{
     router.push({ pathname: '/userEdit', params: user });
   }
-  
   return (
     <View className='flex-row justify-between px-5 bg-violet-950 pt-14 pb-2 rounded-b-3xl shadow ' >
       <View>

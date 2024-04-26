@@ -23,15 +23,31 @@ const Signup = () => {
 
   const handleSignup = async () => {
     if (!emailRef.current || !passRef.current || !userRef.current) {
-      Alert.alert('Sign Up', "Please fill all the fields!");
+      // Alert.alert('Sign Up', "Please fill all the fields!");
+      Toast.show({
+        type: 'error',
+        text1: 'Sign Up',
+        text2: "Please fill all the fields!",
+        visibilityTime: 5000,
+        text1Style: { fontSize: 22 },
+        text2Style: { fontSize: 18 },
+      });
       return;
     }
     setLoading(true);
     let response = await register(emailRef.current,passRef.current,userRef.current);
     setLoading(false);
-    console.log('got result: ',response);
+
     if(!response.success){
-      Alert.alert('Sign up', response.msg);
+      // Alert.alert('Sign up', response.msg);
+      Toast.show({
+        type: 'error',
+        text1: 'Sign Up',
+        text2: response.msg,
+        visibilityTime: 5000,
+        text1Style: { fontSize: 22 },
+        text2Style: { fontSize: 18 },
+      });
     }
   }
 
