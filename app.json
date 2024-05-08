@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "chat-app",
+    "name": "frens",
     "slug": "chat-app",
     "plugins": [
       [
@@ -9,7 +9,8 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -31,7 +32,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#100045"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.ankitdev.chatapp"
     },
     "web": {
       "bundler": "metro",
@@ -40,6 +45,14 @@
     },
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0f7d8b28-814e-40e6-b223-fc4351d65341"
+      }
     }
   }
 }

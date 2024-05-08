@@ -16,9 +16,9 @@ const HomeHeader = () => {
     router.push({ pathname: '/userEdit', params: user });
   }
   return (
-    <View className='flex-row justify-between px-5 bg-violet-950 pt-14 pb-2 rounded-b-3xl shadow ' >
+    <View className='flex-row justify-between px-5 bg-violet-950 pt-14 pb-2 rounded-b-3xl ' >
       <View>
-        <Text style={{ fontSize: hp(4) }} className='font-medium p-2 text-white shadow '>Hi, {user?.username && user.username.split(' ')[0].charAt(0).toUpperCase() + user.username.split(' ')[0].slice(1)}</Text>
+        <Text style={{ fontSize: hp(4) }} className='font-medium p-2 text-white '>Hi, {user?.username && user.username.split(' ')[0].charAt(0).toUpperCase() + user.username.split(' ')[0].slice(1)}</Text>
       </View>
       <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: true }}  onPress={openEdit}>
         <View className='p-2 shadow' >

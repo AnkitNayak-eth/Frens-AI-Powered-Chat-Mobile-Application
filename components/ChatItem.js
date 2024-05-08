@@ -13,7 +13,7 @@ const ChatItem = ({ item }) => {
         router.push({pathname:'/chatRoom', params:item});
     }
     return (
-        <Pressable onPress={openChatRoom} android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: false }} className="flex-row justify-between px-4 items-center gap-3 shadow  py-4 border-b border-b-neutral-200 " >
+        <Pressable onPress={openChatRoom} android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: false }} className="flex-row justify-between px-4 items-center gap-3 py-4 border-b border-b-neutral-200 " >
             <Image
                 style={{ height: hp(6), aspectRatio: 1, borderRadius: 100 }}
                 source={item?.profileUrl}

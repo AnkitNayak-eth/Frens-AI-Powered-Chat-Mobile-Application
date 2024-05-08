@@ -21,17 +21,17 @@ const chatRoom = () => {
   const router = useRouter();
   const [message, setMessage] = useState([]);
   const textRef = useRef('');
-  const inputRef= useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     createRoom();
-    let roomId = getRoomId(user?.userId,item?.userId);
-    const docRef = doc(db,"rooms",roomId);
-    const messageRef = collection(docRef,"messages");
-    const q = query(messageRef,orderBy('createdAt','asc'));
+    let roomId = getRoomId(user?.userId, item?.userId);
+    const docRef = doc(db, "rooms", roomId);
+    const messageRef = collection(docRef, "messages");
+    const q = query(messageRef, orderBy('createdAt', 'asc'));
 
-    let unsub = onSnapshot(q,(snapshot)=>{
-      let allMessages = snapshot.docs.map(doc=>{
+    let unsub = onSnapshot(q, (snapshot) => {
+      let allMessages = snapshot.docs.map(doc => {
         return doc.data();
       });
       setMessage([...allMessages]);
@@ -56,7 +56,7 @@ const chatRoom = () => {
       const docRef = doc(db, 'rooms', roomId);
       const messageRef = collection(docRef, "messages");
       textRef.current = "";
-      if(inputRef) inputRef?.current?.clear();
+      if (inputRef) inputRef?.current?.clear();
       const newDoc = await addDoc(messageRef, {
         userId: user?.userId,
         text: message,
@@ -67,7 +67,6 @@ const chatRoom = () => {
       Alert.alert('Message', err.message);
     }
   }
-
 
   return (
     <KeyboardView inChat={true} >
@@ -82,7 +81,7 @@ const chatRoom = () => {
 
             <View className="flex-row mx-3 justify-between bg-white border-neutral-300 rounded-full " >
               <TextInput
-              ref={inputRef}
+                ref={inputRef}
                 onChangeText={value => textRef.current = value}
                 placeholder='Type message...'
                 style={{ fontSize: hp(2) }}

@@ -66,7 +66,7 @@ const Signin = () => {
     }
     setLoading(true);
     try {
-      await sendPasswordResetEmail(auth,email);
+      await sendPasswordResetEmail(auth, email);
       // Alert.alert('Forgot Password', 'Password reset email sent. Please check your inbox.');
       Toast.show({
         type: 'error',
@@ -93,10 +93,10 @@ const Signin = () => {
 
   return (
     <KeyboardView>
-      <View className="flex-1">
+      <View >
         <StatusBar style="dark" />
-        <View style={{ paddingTop: hp(10) }} className="flex-1 gap-12">
-          <View className="items-center">
+        <View style={{ paddingTop: hp(10), gap: 12 }}>
+          <View style={{ alignItems: "center", marginBottom: 100 }}>
             <LottieView
               style={{ width: 300, height: 300 }}
               source={require("../assets/images/signin.json")}
@@ -104,45 +104,40 @@ const Signin = () => {
               loop
             />
           </View>
-          <View className="gap-10 mx-4 ">
+          <View style={{ gap: 10, marginLeft: 16, marginRight: 16 }}>
             <Text
-              style={{ fontSize: hp(4) }}
-              className="text-center font-bold tracking-wider"
+              style={{ marginBottom: 20, fontSize: hp(4), textAlign: "center", fontWeight: "bold", letterSpacing: 1 }}
             >
               Sign In
             </Text>
-            <View className="gap-4">
+            <View style={{ gap: 20 }}>
               <View
-                style={{ height: hp(7) }}
-                className="flex-row gap-4 px-4 items-center bg-neutral-100 rounded-2xl"
+                style={{ height: hp(7), flexDirection: "row", gap: 4, paddingLeft: 16, paddingRight: 16, alignItems: "center", backgroundColor: "#f3f4f6", borderRadius: 20, borderWidth: 2, borderColor: 'gray' }}
+
               >
                 <Octicons name="mail" size={hp(3)} color="gray" />
                 <TextInput
                   onChangeText={value => emailRef.current = value}
-                  style={{ fontSize: hp(2) }}
-                  className="flex-1 font-semibold "
-                  placeholder="Enter Your E-Mail"
+                  style={{ fontSize: hp(2), fontWeight: 'bold' }}
+                  placeholder="Enter Your E-Mail "
                   placeholderTextColor={"gray"}
                 />
               </View>
-              <View className="gap-2">
+              <View style={{ gap: 4 }}>
                 <View
-                  style={{ height: hp(7) }}
-                  className="flex-row gap-4 px-4  items-center bg-neutral-100 rounded-2xl"
+                  style={{ height: hp(7), flexDirection: "row", gap: 4, paddingLeft: 16, paddingRight: 16, alignItems: "center", backgroundColor: "#f3f4f6", borderRadius: 20, borderWidth: 2, borderColor: 'gray' }}
                 >
                   <Octicons name="lock" size={hp(3)} color="gray" />
                   <TextInput
                     onChangeText={value => passRef.current = value}
-                    style={{ fontSize: hp(2) }}
-                    className="flex-1 font-semibold "
+                    style={{ fontSize: hp(2), fontWeight: 'bold' }}
                     placeholder="Enter Your Password"
                     secureTextEntry
                     placeholderTextColor={"gray"}
                   />
                 </View>
                 <Text
-                  style={{ fontSize: hp(2) }}
-                  className="text-right font-semibold "
+                  style={{ fontSize: hp(2), textAlign: "right", fontWeight: "600" }}
                   onPress={handleForgotPassword}
                 >
                   Forgot Password ?
@@ -151,25 +146,24 @@ const Signin = () => {
 
               <View>
                 {loading ? (
-                  <View className="flex-row justify-center" >
+                  <View style={{ flexDirection: "row", justifyContent: "center" }}>
                     <Loading size={hp(16)} />
-                  </View >
+                  </View>
                 ) : (
                   <View>
-                    <Pressable onPress={handleSignin} style={{ height: hp(7) }} className="bg-violet-950 rounded-xl justify-center items-center"  >
-                      <Text style={{ fontSize: hp(3) }}
-                        className="text-white font-bold tracking-wider" >
+                      <Pressable onPress={handleSignin}  style={{ height: hp(7), backgroundColor: "#4C1D95", borderRadius: 20, justifyContent: "center", alignItems: "center" }}  >
+                        <Text style={{ fontSize: hp(3), color: "white", fontWeight: "bold", letterSpacing: 1 }}>
                         Sign In
                       </Text>
                     </Pressable>
-                  </View >
+                  </View>
                 )}
               </View>
 
-              <View className="flex-row justify-center items-start " >
-                <Text style={{ fontSize: hp(2) }} className="font-semibold">Don't have an account ?</Text>
+              <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "flex-start" }} >
+                <Text style={{ fontSize: hp(2),fontWeight:600 }} >Don't have an account ?</Text>
                 <Pressable onPress={() => router.push('Signup')} >
-                  <Text style={{ fontSize: hp(2) }} className="font-bold text-yellow-400 "> Sign Up</Text>
+                  <Text style={{ fontSize: hp(2), fontWeight: "bold", color: "#f59e0b" }} > Sign Up</Text>
                 </Pressable>
               </View>
             </View>
@@ -179,6 +173,8 @@ const Signin = () => {
       <Toast />
     </KeyboardView >
   );
+
+
 };
 
 export default Signin;

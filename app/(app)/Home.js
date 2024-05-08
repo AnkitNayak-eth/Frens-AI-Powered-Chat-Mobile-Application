@@ -10,14 +10,14 @@ import {
 import ChatList from '../../components/ChatList'
 import Loading from '../../components/Loading'
 import { useEffect } from 'react'
-import {getDocs, query, where } from 'firebase/firestore'
+import { getDocs, query, where } from 'firebase/firestore'
 import { userRef } from '../../firebase'
 
 const Home = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [users, setUsers] = useState([]);
- 
-  
+
+
   useEffect(() => {
     if (user?.uid)
       getUser();
@@ -36,20 +36,20 @@ const Home = () => {
 
   return (
     <>
-    <View className='flex-1 bg-white' >
-      <StatusBar style='light' />
-      {
-        users.length > 0 ? (
-          <ChatList users={users} />
-        ) : (
-          <View className='flex items-center' style={{ top: hp(30) }} >
-            <Loading size={hp(20)} />
-          </View>
-        )
-      }
-    </View>
+      <View style={{flex:1}} >
+        <StatusBar style='light' />
+        {
+          users.length > 0 ? (
+            <ChatList users={users} />
+          ) : (
+              <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }} >
+              <Loading size={hp(20)} />
+            </View>
+          )
+        }
+      </View>
     </>
-    
+
   )
 }
 

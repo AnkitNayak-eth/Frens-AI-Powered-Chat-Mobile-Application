@@ -10,7 +10,7 @@ import {
 
 const StartPage = () => {
   return (
-    <View className="flex-1 justify-center items-center" style={{ top: hp(4) }} >
+    <View style={{ flex:1,alignItems:"center",justifyContent:"center" }} >
       <Loading size={hp(20)} /> 
     </View>
   )

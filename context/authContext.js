@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification, sendPasswordResetEmail, updateEmail, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { router } from 'expo-router';
+import Toast from 'react-native-toast-message';
 export const authContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -49,7 +50,7 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const userDocRef = doc(db, "users", userId);
       await updateDoc(userDocRef, { profileUrl: downloadURL });
-      setUser({ ...user, profileUrl: downloadURL }); 
+      setUser({ ...user, profileUrl: downloadURL });
       return { success: true };
     } catch (error) {
       console.error("Error updating Profile Photo: ", error);
@@ -93,7 +94,15 @@ export const AuthContextProvider = ({ children }) => {
       const user = response.user;
       setIsAuthenticated(user.emailVerified);
       if (!user.emailVerified) {
-        alert("Please verify your email to login.");
+        // alert("Please verify your email to login.");
+        Toast.show({
+          type: 'error',
+          text1: 'error',
+          text2: 'Please verify your email to login.',
+          visibilityTime: 5000,
+          text1Style: { fontSize: 22 },
+          text2Style: { fontSize: 18 },
+        });
         await signOut(auth);
       }
       return { success: true };
@@ -117,9 +126,37 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+
+  const updateEmailAndVerify = async (newEmail, password) => {
+    try {
+      
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        throw new Error("User not found");
+      }
+
+      const credential = EmailAuthProvider.credential(currentUser.email, password);
+      await reauthenticateWithCredential(currentUser, credential);
+
+      
+      await updateEmail(currentUser, newEmail);
+
+      
+      await sendEmailVerification(currentUser);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating email:", error);
+      return { success: false, error };
+    }
+  };
+
+
+
+
   return (
     <authContext.Provider
-      value={{ user, isAuthenticated, login, logout, register, updateUsername, sendPasswordResetEmail, updateProfileUrl }}
+      value={{ user, isAuthenticated, login, logout, register, updateUsername, sendPasswordResetEmail, updateProfileUrl, updateEmailAndVerify }}
     >
       {children}
     </authContext.Provider>
