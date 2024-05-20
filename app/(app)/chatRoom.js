@@ -70,28 +70,28 @@ const chatRoom = () => {
 
   return (
     <KeyboardView inChat={true} >
-      <View className="flex-1 bg-white" >
+
+      <View style={{ flex: 1, backgroundColor: "white" }} >
         <StatusBar style="dark" />
         <ChatRoomHeader user={item} router={router} />
-        <View className="flex-1 justify-between bg-neutral-100 overflow-visible" >
-          <View className="flex-1" >
+
+        <View style={{ flex: 1, justifyContent: "space-between", backgroundColor: "#f5f5f5", overflow: "visible" }}>
+          <View style={{ flex: 1 }} >
             <MessageList message={message} currentUser={user} />
           </View>
-          <View style={{ marginBottom: hp(2) }} className="pt-2" >
 
-            <View className="flex-row mx-3 justify-between bg-white border-neutral-300 rounded-full " >
+          <View style={{ marginBottom: hp(1), paddingHorizontal: 12 }}>
+            <View style={{ display: "flex", flexDirection: "row", marginVertical: 12, justifyContent: "space-between", backgroundColor: "white", borderColor: "#D1D5DB", borderWidth: 1, borderRadius: 50 }} >
               <TextInput
                 ref={inputRef}
                 onChangeText={value => textRef.current = value}
                 placeholder='Type message...'
-                style={{ fontSize: hp(2) }}
-                className="flex-1 m-2"
+                style={{ fontSize: hp(2), flex: 1, margin: 12 }}
               />
-              <Pressable onPress={handleSendMsg} className=" bg-neutral-200 p-3 m-1 rounded-full " android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: true }} >
+              <Pressable onPress={handleSendMsg} style={{ backgroundColor: "#E5E7EB", padding: 12, margin: 4, borderRadius: 50 }} android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: true }} >
                 <Feather name="send" size={hp(3)} color="#737373" />
               </Pressable>
             </View>
-
           </View>
         </View>
       </View>

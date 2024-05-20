@@ -8,9 +8,9 @@ import {
 const MessageItem = ({ message, currentUser }) => {
     if (currentUser?.userId == message?.userId) {
         return (
-            <View className="flex-row justify-end mb-3 mr-3" >
+            <View style={{display:"flex",flexDirection:"row",justifyContent:"flex-end",marginBottom:12,marginRight:12}} >
                 <View style={{ width: wp(80) }} >
-                    <View className="flex self-end p-3 rounded-2xl bg-violet-200 border" >
+                    <View style={{ display: "flex", alignSelf: 'flex-end', padding: 12, borderRadius: 25, backgroundColor: '#E0E7FF', borderWidth: 1, }} >
                         <Text style={{ fontSize: hp(2) }} >
                             {message?.text}
                         </Text>
@@ -20,8 +20,8 @@ const MessageItem = ({ message, currentUser }) => {
         )
     } else {
         return (
-            <View style={{ width: wp(80) }} className="ml-3 mb-3" >
-                <View className="flex self-start p-3 rounded-2xl bg-violet-200 border" >
+            <View style={{ width: wp(80),marginLeft:12,marginBottom:12 }} >
+                <View style={{ display: "flex", alignSelf: 'flex-start', padding: 12, borderRadius: 25, backgroundColor: '#E0E7FF', borderWidth: 1, }} >
                     <Text style={{ fontSize: hp(2) }} >
                         {message?.text}
                     </Text>

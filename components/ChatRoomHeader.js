@@ -11,42 +11,51 @@ import { Image } from 'expo-image';
 
 
 const ChatRoomHeader = ({ user, router }) => {
-    const urlParts = user.profileUrl.split('?');
-    const encodedPath = urlParts[0].replace(/\/([^\/]+)$/, '%2F$1');
-    const encodedUrl = encodedPath + '?' + urlParts[1];
+    const urlParts = user.profileUrl ? user.profileUrl.split('?') : [];
+    const encodedPath = urlParts.length > 0 ? urlParts[0].replace(/\/([^\/]+)$/, '%2F$1') : '';
+    const encodedUrl = encodedPath && urlParts.length > 1 ? encodedPath + '?' + urlParts[1] : null;
+
     return (
         <Stack.Screen
             options={{
                 title: '',
                 headerLeft: () => (
-                    <View className="flex-row items-center gap-4" >
-                        <View className="flex-row justify-center items-center gap-3 py-6" >
-                            <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: true }} onPress={() => router.back()} >
+                    <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 4 }}>
+                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 12, paddingVertical: 12 }}>
+                            <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: true }} onPress={() => router.back()}>
                                 <Ionicons name="chevron-back-outline" size={hp(3)} color="black" />
                             </Pressable>
-                            <Image
-                                style={{ height: hp(6), aspectRatio: 1, borderRadius: 100 }}
-                                source={encodedUrl}
-                                placeholder={userImg}
-                                contentFit="cover"
-                                transition={500}
-                            />
-                            <Text style={{ fontSize: hp(3) }} className="text-neutral-700 font-medium" >
+                            {encodedUrl ? (
+                                <Image
+                                    style={{ height: hp(6), aspectRatio: 1, borderRadius: 100 }}
+                                    source={{ uri: encodedUrl }}
+                                    placeholder={userImg}
+                                    contentFit="cover"
+                                    transition={500}
+                                />
+                            ) : (
+                                <Image
+                                    style={{ height: hp(6), aspectRatio: 1, borderRadius: 100 }}
+                                    source={userImg}
+                                    contentFit="cover"
+                                />
+                            )}
+                            <Text style={{
+                                fontSize: hp(3), fontWeight: '500', color: '#6B7280'}} >
                                 {user?.username}
                             </Text>
                         </View>
                     </View>
                 ),
                 headerRight: () => (
-                    <View className="flex-row items-center gap-8 " >
+                    <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 32 }}>
                         <Ionicons name="call" size={hp(3)} color={'#737373'} />
                         <Ionicons name="videocam" size={hp(3)} color={'#737373'} />
                     </View>
                 )
             }}
-
         />
-    )
-}
+    );
+};
 
-export default ChatRoomHeader
+export default ChatRoomHeader;

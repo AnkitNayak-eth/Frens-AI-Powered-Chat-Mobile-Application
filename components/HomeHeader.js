@@ -16,14 +16,14 @@ const HomeHeader = () => {
     router.push({ pathname: '/userEdit', params: user });
   }
   return (
-    <View className='flex-row justify-between px-5 bg-violet-950 pt-14 pb-2 rounded-b-3xl ' >
+    <View style={{ display: "flex", flexDirection: "row",alignItems:"center", justifyContent: "space-between", paddingHorizontal: 20, backgroundColor: '#3B0764', paddingTop: hp(6), paddingBottom: hp(2), borderBottomLeftRadius: 24, borderBottomRightRadius: 24, }}>
       <View>
-        <Text style={{ fontSize: hp(4) }} className='font-medium p-2 text-white '>Hi, {user?.username && user.username.split(' ')[0].charAt(0).toUpperCase() + user.username.split(' ')[0].slice(1)}</Text>
+        <Text style={{ fontSize: hp(5), fontWeight: '500', color: 'white' }} >Hi, {user?.username && user.username.split(' ')[0].charAt(0).toUpperCase() + user.username.split(' ')[0].slice(1)}</Text>
       </View>
       <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: true }}  onPress={openEdit}>
-        <View className='p-2 shadow' >
+        <View >
           <Image
-            style={{ height: hp(6), aspectRatio: 1, borderRadius: 100 }}
+            style={{ height: hp(7), aspectRatio: 1, borderRadius: 100 }}
             source={user?.profileUrl}
             placeholder={userImg}
             contentFit="cover"

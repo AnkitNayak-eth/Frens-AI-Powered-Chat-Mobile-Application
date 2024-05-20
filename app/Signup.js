@@ -57,7 +57,7 @@ const Signup = () => {
     <View >
       <StatusBar style="dark" />
         <View style={{ paddingTop: hp(10), gap: 12 }}>
-          <View style={{ alignItems: "center", marginBottom: 40 }}>
+          <View style={{ alignItems: "center", marginBottom: 20 }}>
           <LottieView
             style={{ width: 300, height: 300 }}
             source={require("../assets/images/signup.json")}

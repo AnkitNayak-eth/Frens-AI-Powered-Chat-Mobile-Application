@@ -1,7 +1,6 @@
 import { View, Text, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { useAuth } from '../../context/authContext'
-import "../../global.css"
 import { StatusBar } from 'expo-status-bar'
 import {
   widthPercentageToDP as wp,

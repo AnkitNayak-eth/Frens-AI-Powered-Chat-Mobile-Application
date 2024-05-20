@@ -292,10 +292,10 @@ const userEdit = () => {
                             </View>
                         </Pressable>
                             <View style={{ marginTop: hp(4) }} >
-                                <Text style={{ fontSize: hp(4), color: '#333', fontWeight: 600 }}>Hi, {user?.username && user.username.split(' ')[0].charAt(0).toUpperCase() + user.username.split(' ')[0].slice(1)}</Text>
+                                <Text style={{ fontSize: hp(6), color: '#333', fontWeight: 600 }}>Hi, {user?.username && user.username.split(' ')[0].charAt(0).toUpperCase() + user.username.split(' ')[0].slice(1)}</Text>
                         </View>
                     </View>
-                    <View style={{ marginTop: hp(8)}}>
+                    <View style={{ marginTop: hp(4)}}>
                         <View style={{ marginBottom: 20 }}>
                             <View
                                     style={{ height: hp(7), flexDirection: "row", alignItems: "center", paddingHorizontal: 10, backgroundColor: "#f0f0f0", borderRadius: 16, borderWidth: 2, borderColor: 'gray' }}
@@ -358,7 +358,7 @@ const userEdit = () => {
                                 </View>
                             </View>
                         </View>
-                            <View style={{ marginTop: hp(6) }} >
+                            <View style={{ marginTop: hp(3) }} >
                             {loading ? (
                                 <View style={{ flexDirection: "row", justifyContent: "center" }}>
                                     <Loading size={hp(16)} />
