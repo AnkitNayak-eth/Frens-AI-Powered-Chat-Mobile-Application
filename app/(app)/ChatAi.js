@@ -1,80 +1,58 @@
-import { View, Text, StatusBar, TextInput, Pressable, Alert} from 'react-native'
-import React, { useRef, useState } from 'react'
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
-import ChatRoomHeader from '../../components/ChatRoomHeader';
-import MessageList from '../../components/MessageList';
+import { View, Text, StatusBar, TextInput, Pressable, FlatList, ScrollView, } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Feather, Ionicons } from '@expo/vector-icons';
-import KeyboardView from "../../components/KeyboardView";
-import { useEffect } from 'react';
-import { Timestamp, addDoc, collection, doc, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore';
-import { getRoomId } from '../../utils/common';
 import { useAuth } from '../../context/authContext';
-import { db } from '../../firebase';
-import bot from '../../assets/images/bot.png'
 import { Image } from 'expo-image';
+import axios from 'axios';
+import KeyboardView from "../../components/KeyboardView";
 
 const ChatAi = () => {
     const { user } = useAuth();
     const item = useLocalSearchParams();
     const router = useRouter();
-    const [message, setMessage] = useState([]);
+    const [messages, setMessages] = useState([]);
     const textRef = useRef('');
     const inputRef = useRef(null);
 
-    useEffect(() => {
-        createRoom();
-        let roomId = getRoomId(user?.userId, item?.userId);
-        const docRef = doc(db, "rooms", roomId);
-        const messageRef = collection(docRef, "messages");
-        const q = query(messageRef, orderBy('createdAt', 'asc'));
+    const sendMessage = async () => {
+        const userMessage = textRef.current;
+        if (!userMessage.trim()) return;
 
-        let unsub = onSnapshot(q, (snapshot) => {
-            let allMessages = snapshot.docs.map(doc => {
-                return doc.data();
-            });
-            setMessage([...allMessages]);
-        });
+        // Update UI with user's message
+        setMessages(prevMessages => [{ text: userMessage, isUser: true }, ...prevMessages]);
+        textRef.current = '';
+        inputRef.current.clear();
 
-        return unsub;
-    }, []);
-
-    const createRoom = async () => {
-        let roomId = getRoomId(user?.userId, item?.userId);
-        await setDoc(doc(db, "rooms", roomId), {
-            roomId,
-            createdAt: Timestamp.fromDate(new Date())
-        });
-    }
-
-    const handleSendMsg = async () => {
-        let message = textRef.current.trim();
-        if (!message) return;
         try {
-            let roomId = getRoomId(user?.userId, item?.userId);
-            const docRef = doc(db, 'rooms', roomId);
-            const messageRef = collection(docRef, "messages");
-            textRef.current = "";
-            if (inputRef) inputRef?.current?.clear();
-            const newDoc = await addDoc(messageRef, {
-                userId: user?.userId,
-                text: message,
-                senderName: user?.username,
-                createdAt: Timestamp.fromDate(new Date())
-            });
-        } catch (err) {
-            Alert.alert('Message', err.message);
-        }
-    }
+            // Make a request to the AI API
+            const response = await axios.get(`https://llama-ai.vercel.app/api?content=${encodeURIComponent(userMessage)}`);
 
+            // Extract the AI's response from the API response
+            const aiResponse = response.data.message;
+
+            // Update UI with AI's response
+            setMessages(prevMessages => [{ text: aiResponse, isUser: false }, ...prevMessages]);
+        } catch (error) {
+            console.error('Error fetching AI response:', error);
+            // Handle error
+        }
+    };
+
+    const renderItem = ({ item }) => (
+        <View style={{ marginVertical: 10, alignSelf: item.isUser ? 'flex-end' : 'flex-start', backgroundColor: item.isUser ? '#DCF8C6' : '#ECECEC', borderRadius: 10, padding: 10 }}>
+            <Text style={{ fontSize: hp(2), color: 'black' }}>{item.text}</Text>
+        </View>
+    );
 
     return (
         <KeyboardView inChat={true} >
-            <View style={{flex:1,backgroundColor:"white"}} >
+            <View style={{ flex: 1, backgroundColor: "white" }} >
                 <StatusBar style="dark" />
                 <Stack.Screen
                     options={{
@@ -87,7 +65,7 @@ const ChatAi = () => {
                                     </Pressable>
                                     <Image
                                         style={{ height: hp(6), aspectRatio: 1, borderRadius: 100 }}
-                                        source={bot}
+                                        source={require("../../assets/images/bot.png")}
                                         contentFit="cover"
                                         transition={500}
                                     />
@@ -99,22 +77,35 @@ const ChatAi = () => {
                         )
                     }}
                 />
-                
-                <View style={{flex:1,justifyContent:"center",overflow:"visible",backgroundColor:"white"}} >
-                    <View style={{flex:1,justifyContent:"center",alignItems:"center"}} >
-                        <LottieView
-                            style={{ width: 400, height: 400 }}
-                            source={require("../../assets/images/bot.json")}
-                            autoPlay
-                            loop
-                        />
-                        <Text style={{ fontSize: hp(3), textAlign: "center", fontWeight: '600', color: 'black' }} >
-                            Hi, I am Fren{"\n"}
-                            How can I help you.
-                        </Text>
-                    </View>
-                    <View style={{ marginBottom: hp(2) }} >
 
+                <View style={{ flex: 1, justifyContent: "center", overflow: "visible", backgroundColor: "white" }} >
+                    {messages.length === 0 ? (
+                        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+                            <LottieView
+                                style={{ width: 400, height: 400 }}
+                                source={require("../../assets/images/bot.json")}
+                                autoPlay
+                                loop
+                            />
+                            <Text style={{ fontSize: hp(3), textAlign: "center", fontWeight: '600', color: 'black' }} >
+                                Hi, I am Fren{"\n"}
+                                How can I help you.
+                            </Text>
+                        </View>
+                    ) : (
+                        <ScrollView nestedScrollEnabled={true} >
+                            <FlatList
+                                scrollEnabled={false}
+                                data={messages}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={renderItem}
+                                contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 20 }}
+                                inverted
+                            />
+                        </ScrollView>
+                    )}
+
+                    <View style={{ marginBottom: hp(2) }}>
                         <View style={{ marginBottom: hp(1), paddingHorizontal: 12 }}>
                             <View style={{ display: "flex", flexDirection: "row", marginVertical: 12, justifyContent: "space-between", backgroundColor: "white", borderColor: "#D1D5DB", borderWidth: 1, borderRadius: 50 }} >
                                 <TextInput
@@ -123,12 +114,11 @@ const ChatAi = () => {
                                     placeholder='Type message...'
                                     style={{ fontSize: hp(2), flex: 1, margin: 12 }}
                                 />
-                                <Pressable onPress={handleSendMsg} style={{ backgroundColor: "#E5E7EB", padding: 12, margin: 4, borderRadius: 50 }} android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: true }} >
+                                <Pressable onPress={sendMessage} style={{ backgroundColor: "#E5E7EB", padding: 12, margin: 4, borderRadius: 50 }} android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: true }} >
                                     <Feather name="send" size={hp(3)} color="#737373" />
                                 </Pressable>
                             </View>
                         </View>
-
                     </View>
                 </View>
             </View>
@@ -136,4 +126,4 @@ const ChatAi = () => {
     )
 }
 
-export default ChatAi
+export default ChatAi;

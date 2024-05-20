@@ -17,6 +17,7 @@
     "@firebase/storage": "^0.12.4",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/native": "^6.1.17",
+    "axios": "^1.7.1",
     "expo": "^51.0.8",
     "expo-constants": "~16.0.1",
     "expo-file-system": "~17.0.1",
