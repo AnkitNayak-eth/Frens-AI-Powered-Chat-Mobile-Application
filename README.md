@@ -10,4 +10,4 @@
 - **Firebase Backend:** Utilize Firebase for secure authentication and real-time database capabilities.
 - **React Native:** Develop a cross-platform mobile application with React Native for both iOS and Android platforms.
 
-# [Download Frens APK](https://github.com/AnkitNayak-eth/Frens.-AI-Powered-Chat-Mobile-Application/releases/download/v1.0.0/frens.apk)
+# [Download Frens APK](https://github.com/AnkitNayak-eth/Frens.-AI-Powered-Chat-Mobile-Application/releases/tag/v1.0.1)
