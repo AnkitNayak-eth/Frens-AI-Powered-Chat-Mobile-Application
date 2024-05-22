@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, TextInput, Pressable, Alert } from 'react-native'
+import { View, Text, StatusBar, TextInput, Pressable, Alert, Keyboard } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import ChatRoomHeader from '../../components/ChatRoomHeader';
@@ -21,6 +21,7 @@ const chatRoom = () => {
   const router = useRouter();
   const [message, setMessage] = useState([]);
   const textRef = useRef('');
+  const scrollViewRef = useRef('');
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -37,7 +38,15 @@ const chatRoom = () => {
       setMessage([...allMessages]);
     });
 
-    return unsub;
+    const KeyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow', updateScrollView
+    )
+
+    return () => {
+      unsub;
+      KeyboardDidShowListener.remove();
+    }
+
   }, []);
 
   const createRoom = async () => {
@@ -68,6 +77,17 @@ const chatRoom = () => {
     }
   }
 
+  useEffect(() => {
+    updateScrollView();
+  }, [message])
+
+  const updateScrollView = () => {
+    setTimeout(() => {
+      scrollViewRef?.current?.scrollToEnd({ animated: true })
+    }, 100)
+  }
+
+
   return (
     <KeyboardView inChat={true} >
 
@@ -77,7 +97,7 @@ const chatRoom = () => {
 
         <View style={{ flex: 1, justifyContent: "space-between", backgroundColor: "#f5f5f5", overflow: "visible" }}>
           <View style={{ flex: 1 }} >
-            <MessageList message={message} currentUser={user} />
+            <MessageList scrollViewRef={scrollViewRef} message={message} currentUser={user} />
           </View>
 
           <View style={{ marginBottom: hp(1), paddingHorizontal: 12 }}>

@@ -1,48 +1,45 @@
-import { View, Text, StatusBar, TextInput, Pressable, FlatList, ScrollView, } from 'react-native';
-import React, { useRef, useState } from 'react';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { View, Text, StatusBar, TextInput, Pressable, FlatList, ScrollView } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { Stack, useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../context/authContext';
 import { Image } from 'expo-image';
 import axios from 'axios';
 import KeyboardView from "../../components/KeyboardView";
 
 const ChatAi = () => {
-    const { user } = useAuth();
-    const item = useLocalSearchParams();
     const router = useRouter();
     const [messages, setMessages] = useState([]);
     const textRef = useRef('');
     const inputRef = useRef(null);
+    const scrollViewRef = useRef(null);  
 
     const sendMessage = async () => {
         const userMessage = textRef.current;
         if (!userMessage.trim()) return;
 
-        // Update UI with user's message
         setMessages(prevMessages => [{ text: userMessage, isUser: true }, ...prevMessages]);
         textRef.current = '';
         inputRef.current.clear();
 
         try {
-            // Make a request to the AI API
             const response = await axios.get(`https://llama-ai.vercel.app/api?content=${encodeURIComponent(userMessage)}`);
-
-            // Extract the AI's response from the API response
             const aiResponse = response.data.message;
 
-            // Update UI with AI's response
             setMessages(prevMessages => [{ text: aiResponse, isUser: false }, ...prevMessages]);
         } catch (error) {
             console.error('Error fetching AI response:', error);
-            // Handle error
         }
     };
+
+    useEffect(() => {
+        if (scrollViewRef.current) {
+            setTimeout(() => {
+                scrollViewRef.current.scrollToEnd({ animated: true });
+            }, 100);
+        }
+    }, [messages]);
 
     const renderItem = ({ item }) => (
         <View style={{ marginVertical: 10, alignSelf: item.isUser ? 'flex-end' : 'flex-start', backgroundColor: item.isUser ? '#DCF8C6' : '#ECECEC', borderRadius: 10, padding: 10 }}>
@@ -93,7 +90,15 @@ const ChatAi = () => {
                             </Text>
                         </View>
                     ) : (
-                        <ScrollView nestedScrollEnabled={true} >
+                        <ScrollView
+                            ref={scrollViewRef}  
+                            nestedScrollEnabled={true}
+                            onContentSizeChange={() => {
+                                setTimeout(() => {
+                                    scrollViewRef.current.scrollToEnd({ animated: true });
+                                }, 100);
+                            }} 
+                        >
                             <FlatList
                                 scrollEnabled={false}
                                 data={messages}
@@ -105,7 +110,7 @@ const ChatAi = () => {
                         </ScrollView>
                     )}
 
-                    <View style={{ marginBottom: hp(2) }}>
+                    <View>
                         <View style={{ marginBottom: hp(1), paddingHorizontal: 12 }}>
                             <View style={{ display: "flex", flexDirection: "row", marginVertical: 12, justifyContent: "space-between", backgroundColor: "white", borderColor: "#D1D5DB", borderWidth: 1, borderRadius: 50 }} >
                                 <TextInput

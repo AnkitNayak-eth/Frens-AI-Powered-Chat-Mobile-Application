@@ -39,7 +39,7 @@ const Home = () => {
         <StatusBar style='light' />
         {
           users.length > 0 ? (
-            <ChatList users={users} />
+            <ChatList currentUser={user} users={users} />
           ) : (
               <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }} >
               <Loading size={hp(20)} />

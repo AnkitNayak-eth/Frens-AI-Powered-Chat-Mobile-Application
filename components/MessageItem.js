@@ -10,7 +10,7 @@ const MessageItem = ({ message, currentUser }) => {
         return (
             <View style={{display:"flex",flexDirection:"row",justifyContent:"flex-end",marginBottom:12,marginRight:12}} >
                 <View style={{ width: wp(80) }} >
-                    <View style={{ display: "flex", alignSelf: 'flex-end', padding: 12, borderRadius: 25, backgroundColor: '#E0E7FF', borderWidth: 1, }} >
+                    <View style={{ display: "flex", alignSelf: 'flex-end', padding: 12, borderRadius: 25, backgroundColor: '#DCF8C6', borderWidth: 1, }} >
                         <Text style={{ fontSize: hp(2) }} >
                             {message?.text}
                         </Text>
@@ -21,7 +21,7 @@ const MessageItem = ({ message, currentUser }) => {
     } else {
         return (
             <View style={{ width: wp(80),marginLeft:12,marginBottom:12 }} >
-                <View style={{ display: "flex", alignSelf: 'flex-start', padding: 12, borderRadius: 25, backgroundColor: '#E0E7FF', borderWidth: 1, }} >
+                <View style={{ display: "flex", alignSelf: 'flex-start', padding: 12, borderRadius: 25, backgroundColor: '#ECECEC', borderWidth: 1, }} >
                     <Text style={{ fontSize: hp(2) }} >
                         {message?.text}
                     </Text>
