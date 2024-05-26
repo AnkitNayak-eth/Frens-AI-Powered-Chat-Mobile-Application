@@ -24,7 +24,7 @@ const ChatAi = () => {
         inputRef.current.clear();
 
         try {
-            const response = await axios.get(`https://llama-ai.vercel.app/api?content=${encodeURIComponent(userMessage)}`);
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api?content=${encodeURIComponent(userMessage)}`);
             const aiResponse = response.data.message;
 
             setMessages(prevMessages => [{ text: aiResponse, isUser: false }, ...prevMessages]);
