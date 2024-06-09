@@ -23,7 +23,6 @@ const Signin = () => {
 
   const handleSignin = async () => {
     if (!emailRef.current || !passRef.current) {
-      // Alert.alert('Sign In', "Please fill all the fields!");
       Toast.show({
         type: 'error',
         text1: 'Sign In',
@@ -38,7 +37,6 @@ const Signin = () => {
     const response = await login(emailRef.current, passRef.current);
     setLoading(false);
     if (!response.success) {
-      // Alert.alert('Sign In', response.msg);
       Toast.show({
         type: 'error',
         text1: 'Sign In',
@@ -53,7 +51,6 @@ const Signin = () => {
   const handleForgotPassword = async () => {
     const email = emailRef.current.trim();
     if (!email) {
-      // Alert.alert('Forgot Password', 'Please enter your email address.');
       Toast.show({
         type: 'error',
         text1: 'Forgot Password',
@@ -67,7 +64,6 @@ const Signin = () => {
     setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email);
-      // Alert.alert('Forgot Password', 'Password reset email sent. Please check your inbox.');
       Toast.show({
         type: 'error',
         text1: 'Forgot Password',
@@ -77,7 +73,6 @@ const Signin = () => {
         text2Style: { fontSize: 18 },
       });
     } catch (error) {
-      // Alert.alert('Forgot Password', error.message);
       Toast.show({
         type: 'error',
         text1: 'Forgot Password',

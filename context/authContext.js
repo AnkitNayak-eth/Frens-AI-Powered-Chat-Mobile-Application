@@ -70,7 +70,7 @@ export const AuthContextProvider = ({ children }) => {
       });
       await sendEmailVerification(user);
       router.back();
-      // alert("Please verify your email to login.");
+     
       Toast.show({
         type: 'error',
         text1: 'Sign Up',
@@ -94,7 +94,7 @@ export const AuthContextProvider = ({ children }) => {
       const user = response.user;
       setIsAuthenticated(user.emailVerified);
       if (!user.emailVerified) {
-        // alert("Please verify your email to login.");
+    
         Toast.show({
           type: 'error',
           text1: 'error',

@@ -24,7 +24,6 @@ const Signup = () => {
 
   const handleSignup = async () => {
     if (!emailRef.current || !passRef.current || !userRef.current) {
-      // Alert.alert('Sign Up', "Please fill all the fields!");
       Toast.show({
         type: 'error',
         text1: 'Sign Up',
@@ -40,7 +39,6 @@ const Signup = () => {
     setLoading(false);
 
     if(!response.success){
-      // Alert.alert('Sign up', response.msg);
       Toast.show({
         type: 'error',
         text1: 'Sign Up',
