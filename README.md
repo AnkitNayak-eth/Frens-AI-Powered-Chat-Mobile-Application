@@ -1,6 +1,6 @@
 # Frens. - AI Powered Chat Mobile Application
 
-### Frens is a real-time chat application built using React Native, Firebase, and the GPT API. It enables users to chat with each other seamlessly and also interact with an AI chatbot for enhanced conversational experiences.
+### Frens is a real-time chat application built using React Native, Firebase, and self built Llama AI API. It enables users to chat with each other seamlessly and also interact with an AI chatbot for enhanced conversational experiences.
 ---
 
 ![Screenshot (226)](https://github.com/AnkitNayak-eth/Frens.-AI-Powered-Chat-Mobile-Application/assets/52006128/2ed0510e-7759-44ef-af12-ee3485faee4b)
@@ -11,7 +11,7 @@
   Experience smooth and instant messaging between users.
 
 - **AI-Powered Chatbot**  
-  Chat with an intelligent chatbot powered by the GPT API for enriched conversational experiences.
+  Chat with an intelligent chatbot powered by the self built Llama AI API for enriched conversational experiences.
 
 - **User Authentication**  
   Secure sign-in and account creation with Firebase authentication.
@@ -34,7 +34,7 @@
 
 - **Frontend**: React Native
 - **Backend**: Firebase (Authentication, Firestore, Storage)
-- **AI Integration**: GPT API
+- **AI Integration**: self built Llama AI API
 - **UI Components**: Expo Components
 - **Utilities**: Axios, React Navigation, Async Storage
 
